@@ -38,7 +38,7 @@ class Country
 
   
     /**
-     * @ORM\OneToMany(targetEntity="BepsElectionBundle\Entity\Party")
+     * @ORM\OneToMany(targetEntity="BepsElectionBundle\Entity\Party", mappedBy="country")
      * @ORM\JoinColumn(nullable=false)
      */
     private $parties ; 
@@ -99,4 +99,54 @@ class Country
     {
         return $this->flag;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->parties = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add parties
+     *
+     * @param \BepsElectionBundle\Entity\Party $parties
+     * @return Country
+     */
+    public function addParty(\BepsElectionBundle\Entity\Party $parties)
+    {
+        $this->parties[] = $parties;
+
+        return $this;
+    }
+
+    /**
+     * Remove parties
+     *
+     * @param \BepsElectionBundle\Entity\Party $parties
+     */
+    public function removeParty(\BepsElectionBundle\Entity\Party $parties)
+    {
+        $this->parties->removeElement($parties);
+    }
+
+    /**
+     * Get parties
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getParties()
+    {
+        return $this->parties;
+    }
+    
+    /*
+     * 
+     * default toString method, used in twig
+     */
+    public function __toString()
+    {
+        return (string) $this->id;
+    }
+    
 }

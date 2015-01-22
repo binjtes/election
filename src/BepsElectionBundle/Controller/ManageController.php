@@ -27,10 +27,8 @@ class ManageController extends Controller
         
         //add an empty form for adding a missing country
         $country = new Country();
-        $form = $this->createForm(new CountryType());
         
-         
-        $form = $this->createForm(new CountryType(),$country);
+        $form = $this->createForm(new CountryType(),$country, array('action'=>'manage'));
          
         $form->handleRequest($this->getRequest());
         // once updated , redirection to index manage page (listing)
@@ -56,7 +54,7 @@ class ManageController extends Controller
     /**
      * @Route("/manage/edit/{countryid}", name="manage_edit")
      */
-    public function editAction($countryid ){
+    public function editAction($countryid){
         //edit a country : name, some metadata  + TODO parties 
         $country = $this->getDoctrine()->getRepository('BepsElectionBundle:Country')->find($countryid);
         $form = $this->createForm(new CountryType($countryid),  $country); 
@@ -92,6 +90,7 @@ class ManageController extends Controller
         
         
         $form = $this->createFormBuilder($country)
+            ->add('confirm', 'checkbox', array('required' => true , 'mapped'=>false))
             ->add('delete', 'submit')
             ->getForm();
            
@@ -110,8 +109,8 @@ class ManageController extends Controller
             
             ));
             
-            //return $this->redirect( $this->generateUrl('manage'));
-            return $this->render('BepsElectionBundle:Manage:delete.html.twig',array('form' => $form->createView()));
+            return $this->redirect( $this->generateUrl('manage'));
+         
         }             
     	
         return $this->render('BepsElectionBundle:Manage:delete.html.twig',array('form' => $form->createView()));

@@ -13,14 +13,28 @@ class CountryType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		
-	    //delete action does not need any info from the object
-	    if($options['action'] == 'delete'){
-	        $builder->add('name', 'hidden')
-	        ->add('flag', 'hidden');
-	    }else{
-	        $builder->add('name', 'text')
-	        ->add('flag', 'text');
+	    // delete action does not need any info from the object
+	    // 'manage' handles a simple create form   
+	    // edit does 
 	    
+	    switch ($options['action']){
+    	    case 'delete':
+    	        $builder->add('name', 'hidden')
+    	        ->add('flag', 'hidden');
+    	        break;
+    	    case 'manage':
+    	        $builder->add('name', 'text')
+    	        ->add('flag', 'text') ;
+    	        break;
+    	    default : 
+    	        $builder->add('name', 'text')
+    	        ->add('flag', 'text')
+    	        ->add('parties', 'collection', array(
+    	            'type'         => new PartyType(),
+    	            'allow_add'    => true,
+    	            'allow_delete' => true
+    	        ))
+    	        ;
 	    }          
 	}
 
@@ -35,7 +49,7 @@ class CountryType extends AbstractType
 	
 	public function getName()
 	{
-		return 'country';
+		return 'bepselectionbundle_country';
 	}
 
 	

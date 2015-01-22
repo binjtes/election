@@ -37,6 +37,12 @@ class Country
 
 
   
+    /**
+     * @ORM\OneToMany(targetEntity="BepsElectionBundle\Entity\Party", mappedBy="country")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $parties ; 
+    
     
     /**
      * Get id

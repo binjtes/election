@@ -79,8 +79,8 @@ class Party
     private $leaderImage;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BepsElectionBundle\Entity\Country")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="BepsElectionBundle\Entity\Country",inversedBy="parties")
+     * @ORM\JoinColumn(nullable=false, referencedColumnName="id", onDelete="CASCADE")
      */   
     private $country ;
     
