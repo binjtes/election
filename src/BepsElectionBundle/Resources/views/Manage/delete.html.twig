@@ -1,0 +1,15 @@
+{# src/BepsElectionBundle/Resources/views/Manage/delete.html.twig #} 
+{% extends 'BepsElectionBundle:Default:index.html.twig' %} 
+{% block title %}Delete a country{% endblock %} 
+
+{% block dashboardcontainer %}
+<div class="election-template">
+	<h1>Delete a country</h1>
+	<div class="jumbotron">
+		<a href="#" class="close" data-dismiss="alert">&times;</a> <strong>Warning!</strong>
+		You are about to delete a country and all its associated parties .Are
+		you sure you need to do this ? 
+		{{ form_start(form) }}
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

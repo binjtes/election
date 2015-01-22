@@ -1,0 +1,24 @@
+{# src/BepsElectionBundle/Resources/views/Manage/index.html.twig #}
+{% extends 'BepsElectionBundle:Default:index.html.twig' %}
+{% block title %}Edit a country{% endblock %}
+
+        {% block dashboardcontainer %}
+
+		      <div class="election-template">
+		        <h1>Edit a country </h1>
+		        
+   		{{ form_start(form) }}
+		    {{ form_errors(form) }}		
+		    {{ form_row(form.name) }}
+		    {{ form_row(form.flag) }}
+	
+			
+			<div class="btn-group" role="group" aria-label="">
+			  <input class="btn btn-primary " value="Update" type="submit" >
+			</div>
+	
+		{{ form_end(form) }}
+	
+ 		{% endblock %}
+
+

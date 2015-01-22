@@ -1,0 +1,46 @@
+{# src/BepsElectionBundle/Resources/views/Manage/index.html.twig #}
+{% extends 'BepsElectionBundle:Default:index.html.twig' %}
+{% block title %}Manage Countries{% endblock %}
+
+            {% block dashboardcontainer %}
+  				<div class="row">
+      				<div class="col-xs-6 col-md-7"><h3>edit or create a country plus its political parties</h3></div>
+ 
+		      	</div>
+		      	<div class="row">
+		      	   <button class="btn btn-primary" id="createbutton" ><span class="glyphicon glyphicon-plus-sign"></span>{% trans with {'%item%': 'country'} from "form" %} Create a new %item%{% endtrans %}</button>
+		      	</div>
+		      	<div class="row col-xs-6 col-md-7" id="formhidden">
+		      		<!--  form to create a country  -->
+			      	{{ form_start(form) }}
+					    {{ form_errors(form) }}		
+					    {{ form_row(form.name) }}
+						{{ form_row(form.flag) }}
+					    <input type="submit" />
+					{{ form_end(form) }}
+		      	</div> 
+		      	<table class="table table-hover">
+		      	<thead>
+				<th>Name</th>
+				<th>flag image</th>
+			  	<th>Edit country</th>
+		      	<th>delete country</th>
+		      	</thead>
+		      	<tbody>
+				{% for country in countries %}
+				<tr >
+					<td>{{ country.name }}</td>
+					<td>{{ country.flag }}</td>
+					
+					<td><a href="{{ path('manage_edit', {'countryid': country.id}) }}" class="btn btn-primary" ><span class="glyphicon glyphicon-pencil"></span> Edit</a> </td>
+					<td><a href="{{ path('manage_delete', {'countryid': country.id }) }}"" class="btn btn-danger" ><span class="glyphicon glyphicon-remove-sign"></span> Delete </a></td>
+				</tr>
+				{% endfor %}
+				</tbody>
+				</table>
+			
+				
+    	</div><!-- /.container -->
+    {% endblock %}
+
+
