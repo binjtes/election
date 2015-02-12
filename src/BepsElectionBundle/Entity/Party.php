@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="party")
  * @ORM\Entity(repositoryClass="BepsElectionBundle\Entity\PartyRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Party
 {
@@ -84,7 +85,34 @@ class Party
      */   
     private $country ;
     
+    
+    public function __construct()
+    {
+        $this->updatedAt = new \Datetime();
+    
+    }
 
+    
+    
+    
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTime();
+    }
+    
+    
+    /**
+     * @ORM\preUpdate
+     */
+     public function setUpdatedAtValue()
+     {
+         $this->updatedAt = new \DateTime();
+     }
+    
+    
     /**
      * Get id
      *

@@ -1,26 +1,64 @@
 {# src/BepsElectionBundle/Resources/views/Manage/index.html.twig #}
 {% extends 'BepsElectionBundle:Default:index.html.twig' %}
+
+{% form_theme form _self %}
+
+{% form_theme form 'BepsElectionBundle:Theme:collection_widget.parties.html.twig' %}
+
+
+
 {% block title %}Edit a country{% endblock %}
 
         {% block dashboardcontainer %}
 
-		      <div class="election-template">
+		      <div class="edit-country">
 		        <h1>Edit a country </h1>
 		        
    		{{ form_start(form) }}
 		    {{ form_errors(form) }}		
 		    {{ form_row(form.name) }}
-		    {{ form_row(form.flag) }}
+		    {{ form_row(form.file) }}
 	
 			
 			<div class="btn-group" role="group" aria-label="">
 			  <input class="btn btn-primary " value="Update" type="submit" />
 			</div>
         <hr/>
+        
+        {% for child in form %}
+       
+            <div>
+            
+                {{ form_widget(child) }}
+                {{ form_label(child) }}
+
+            </div>
+
+        {% endfor %}
 		{{ form_end(form) }}
 		     <div class="btn-group" role="group" aria-label="">
 			  <input class="btn btn-primary " value="Add a party" type="submit"  id="createparty" />
 			</div>
+			
+			
+			
+{# 	MODAL MODE				     <div class="btn-group" role="group" aria-label="">#}
+{# 			  <input class="btn btn-primary " value="Add a party" type="submit"  id="createparty" data-toggle="modal" data-target="#myModal"/>#}
+{# 			</div>#}
+{# 	 		<div class="modal fade" id="myModal">#}
+{#               <div class="modal-dialog">#}
+{#                 <div class="modal-content">#}
+{#                   <div class="modal-header">#}
+{#                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>#}
+{#                     <h4 class="modal-title">Modal title</h4>#}
+{#                   </div>#}
+{#                   <div class="modal-body">#}
+{#                    {{ form_end(form) }}#}
+{#                   </div>#}
+{#                 </div><!-- /.modal-content -->#}
+{#               </div><!-- /.modal-dialog -->#}
+{#             </div><!-- /.modal -->#}
  		{% endblock %}
+
 
 

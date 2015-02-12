@@ -3,12 +3,13 @@
 namespace BepsElectionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * Country
  *
  * @ORM\Table(name="country")
  * @ORM\Entity(repositoryClass="BepsElectionBundle\Entity\CountryRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Country
 {
@@ -36,9 +37,122 @@ class Country
     private $flag;
 
 
-  
+    private $file ;
+    
+    // temporary name for uploaded file 
+    private $tempFilename ;
+    
+    
+    public function getFile()
+    {
+        return $this->file;
+    }
+    
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+        // for later remove, store the previous file to be deleted 
+        dump('setFile previous file is '. $this->flag);
+        if(null !== $this->flag){
+            $this->tempFilename = $this->flag ;
+            $this->flag = null;
+        }
+    }
+    
+ 
+    
+    public function getWebPath()
+    {
+        return $this->getUploadDir().'/'.$this->getId().'.'.$this->getFlag();
+    }
+    
     /**
-     * @ORM\OneToMany(targetEntity="BepsElectionBundle\Entity\Party", mappedBy="country")
+     * 
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     * 
+     */
+    public function preUpload(){
+        dump("PreUpdate");
+        if(null == $this->file ){
+            return ;
+        }   
+        // the file name is the id of the entity.
+        $this->flag = $this->file->getClientOriginalName();
+        dump("PreUpdate this->file extension is : " . $this->flag) ;
+        
+    }
+    
+    
+
+    /**
+     *
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     *
+     */
+    public function upload(){
+        // if there is no uploaded file , do nothing .
+        dump("PostUpdate");
+        if(null == $this->file ){
+            return ;
+        }
+        
+        // remove the previous image 
+        if(null !== $this->tempFilename){
+            $oldfile = $this->getUploadRootDir().'/'.$this->tempFilename ;
+            if(file_exists($oldfile)){
+                unlink($oldfile);
+                dump('PostUpdate removed old file ' .$oldfile ) ;
+            }
+        
+        }
+        
+        dump("PostUpdate name ") ;
+        $this->file->move($this->getUploadRootDir(),$this->flag);
+        dump("flag set to : " . $this->flag) ; 
+        
+    }
+    
+    /**
+     *
+     * @ORM\PreRemove()
+     *
+     */   
+    public function preRemoveUpload(){
+         dump("PreRemove");
+        $this->tempFilename = $this->getUploadRootDir().'/'.$this->flag;
+        dump("preremove upload " . $this->tempFilename);
+       
+    }
+    
+    /*
+     * 
+     * @ORM\PostRemove()
+     * 
+     */
+    public function removeUpload(){
+        dump("PostRemove");
+        if(file_exists($this->tempFilename)){
+            unlink($this->tempFilename);
+            dump('PostRemove removed temporary file '.$this->tempFilename ) ;
+        }
+    }
+    
+    public function getUploadDir(){
+        // relative to  /web repository 
+        return "uploads/img/countries" ;
+    }
+    
+    public function getUploadRootDir(){
+        
+        //relative path to the image in the php code..
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
+    }
+    
+    
+    /**
+     * @ORM\OneToMany(targetEntity="BepsElectionBundle\Entity\Party", mappedBy="country",cascade={"persist","remove"}, orphanRemoval=true)
      * @ORM\JoinColumn(nullable=false)
      */
     private $parties ; 
@@ -63,7 +177,7 @@ class Country
     public function setName($name)
     {
         $this->name = $name;
-
+        dump("yoyo  ") ;
         return $this;
     }
 

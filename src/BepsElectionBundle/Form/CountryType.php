@@ -24,15 +24,17 @@ class CountryType extends AbstractType
     	        break;
     	    case 'manage':
     	        $builder->add('name', 'text')
-    	        ->add('flag', 'text') ;
+    	       ->add('flag', 'text') ;
     	        break;
     	    default : 
     	        $builder->add('name', 'text')
+    	        ->add('file', 'file')
     	        ->add('flag', 'text')
     	        ->add('parties', 'collection', array(
     	            'type'         => new PartyType(),
     	            'allow_add'    => true,
-    	            'allow_delete' => true
+    	            'allow_delete' => true,
+    	            'by_reference' => false
     	        ))
     	        ;
 	    }          

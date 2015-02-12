@@ -17,13 +17,11 @@ class PartyType extends AbstractType
         $builder
             ->add('name')
             ->add('shortName')
-            ->add('updatedAt')
-            ->add('createdAt')
-            ->add('logo')
-            ->add('webcolor')
-            ->add('leader')
-            ->add('leaderImage')
-            ->add('country')
+            ->add('logo', 'text' , array('required' => false))
+            ->add('webcolor','text', array('required' => false))
+            ->add('leader','text', array('required' => false))
+            ->add('leaderImage','text', array('required' => false))
+          
         ;
     }
     

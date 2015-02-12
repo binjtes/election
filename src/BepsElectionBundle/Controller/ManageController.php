@@ -55,6 +55,8 @@ class ManageController extends Controller
      * @Route("/manage/edit/{countryid}", name="manage_edit")
      */
     public function editAction($countryid){
+        dump($this->getRequest());
+        
         //edit a country : name, some metadata  + TODO parties 
         $country = $this->getDoctrine()->getRepository('BepsElectionBundle:Country')->find($countryid);
         $form = $this->createForm(new CountryType($countryid),  $country); 
@@ -63,6 +65,7 @@ class ManageController extends Controller
         
             $em = $this->getDoctrine()->getManager();
             $country = $form->getData(); 
+            
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice',    array(
                 'alert' => 'success',
@@ -71,7 +74,7 @@ class ManageController extends Controller
             ));
         }    
             
-    	return $this->render('BepsElectionBundle:Manage:edit.html.twig',array('form' => $form->createView()));
+    	return $this->render('BepsElectionBundle:Manage:edit.html.twig',array('form' => $form->createView(), 'country' => $country));
     }
   
     /**

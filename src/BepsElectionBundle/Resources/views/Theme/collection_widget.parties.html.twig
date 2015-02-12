@@ -1,0 +1,51 @@
+{# src/BepsElectionBundle/Resources/views/Theme/collection_widget.parties.html.twig #}
+{% block collection_widget %}
+{% spaceless %}
+    <div class="collection">CAS 1
+        {% if prototype is defined %}
+            {% set attr = attr|merge({'data-prototype': block('collection_item_widget') }) %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_errors(form) }}
+            
+            {% for rows in form %}
+                <div class="existing_party">
+                {% set fieldNum = 1 %}
+                {% for row in rows %}
+                    <div class"field{{ fieldNum }}">
+                    {{ form_label(row) }}
+                    {{ form_widget(row, { 'attr': { 'class': 'test' }}) }}
+                    </div>
+                    {% set fieldNum = fieldNum + 1 %}
+                {% endfor %}
+            
+               </div>
+               {% endfor %}
+            
+            {{ form_rest(form) }}
+        </div>
+        <div class="clear"></div>
+   
+    </div>
+    <div class="clear"></div>
+{% endspaceless %}
+{% endblock collection_widget %}
+ 
+{% block collection_item_widget %}
+{% spaceless %}
+    <div class="collection">CAS 2 add a party
+    {% set fieldNum = 1 %}
+    {% for row in prototype %}
+        <div class="field{{ fieldNum }}">
+        {{ form_label(row) }}
+        {{ form_widget(row, { 'attr': { 'class': 'test' }}) }}
+        </div>
+        {% set fieldNum = fieldNum + 1 %}
+    {% endfor %}
+        <a class="remove" title="Remove" href="javascript:void()">
+            <span>Delete</span>
+        </a>
+        <div class="clear"></div>
+    </div>
+{% endspaceless %}
+{% endblock collection_item_widget %}
