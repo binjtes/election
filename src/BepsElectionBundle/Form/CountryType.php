@@ -28,8 +28,8 @@ class CountryType extends AbstractType
     	        break;
     	    default : 
     	        $builder->add('name', 'text')
-    	        ->add('file', 'file')
-    	        ->add('flag', 'text')
+    	        ->add('file', 'file', array('image_path'=>'webPath' ,'required' => false ,'label'=>'change flag image'))
+    	        ->add('flag', 'hidden')
     	        ->add('parties', 'collection', array(
     	            'type'         => new PartyType(),
     	            'allow_add'    => true,

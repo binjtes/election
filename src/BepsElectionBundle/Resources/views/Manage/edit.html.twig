@@ -1,10 +1,28 @@
 {# src/BepsElectionBundle/Resources/views/Manage/index.html.twig #}
 {% extends 'BepsElectionBundle:Default:index.html.twig' %}
-
 {% form_theme form _self %}
-
+{% form_theme form 'BepsElectionBundle:Form:fields.html.twig' %}
 {% form_theme form 'BepsElectionBundle:Theme:collection_widget.parties.html.twig' %}
 
+{% block file_widget %}
+    {% spaceless %}
+    <hr>ICI<hr>
+    {{ block('form_widget') }}
+    {% if image_url is not null %}
+        <img src="{{ asset(image_url) }}"/>
+    {% endif %}
+
+    {% endspaceless %}
+{% endblock %}
+
+{% block text_widget %}
+    {% spaceless %}
+    <hr>Yo<hr>
+    {{ block('form_widget') }}
+
+
+    {% endspaceless %}
+{% endblock %}
 
 
 {% block title %}Edit a country{% endblock %}
@@ -16,21 +34,21 @@
 		        
    		{{ form_start(form) }}
 		    {{ form_errors(form) }}		
+		     <img src="{{ asset(country.getWebPath) }}"/>  
 		    {{ form_row(form.name) }}
 		    {{ form_row(form.file) }}
-	
-			
+		   
+	    
 			<div class="btn-group" role="group" aria-label="">
 			  <input class="btn btn-primary " value="Update" type="submit" />
 			</div>
         <hr/>
-        
         {% for child in form %}
        
             <div>
             
                 {{ form_widget(child) }}
-                {{ form_label(child) }}
+            
 
             </div>
 

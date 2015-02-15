@@ -39,9 +39,51 @@ class Country
 
     private $file ;
     
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated", type="datetimetz")
+     */
+    private $updatedAt;
+    
+    
+    
     // temporary name for uploaded file 
     private $tempFilename ;
     
+    
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->parties = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->updatedAt = new \Datetime();
+    }    
+   
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     * @return Party
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    
+        return $this;
+    }
+    
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
     
     public function getFile()
     {
@@ -51,6 +93,9 @@ class Country
     public function setFile(UploadedFile $file = null)
     {
         $this->file = $file;
+       
+        $this->updatedAt = new \DateTime();
+        
         // for later remove, store the previous file to be deleted 
         dump('setFile previous file is '. $this->flag);
         if(null !== $this->flag){
@@ -78,8 +123,9 @@ class Country
             return ;
         }   
         // the file name is the id of the entity.
+        // TODO : improve the sanitization of the filename
         $this->flag = $this->file->getClientOriginalName();
-        dump("PreUpdate this->file extension is : " . $this->flag) ;
+       
         
     }
     
@@ -109,8 +155,8 @@ class Country
         }
         
         dump("PostUpdate name ") ;
-        $this->file->move($this->getUploadRootDir(),$this->flag);
-        dump("flag set to : " . $this->flag) ; 
+        $this->file->move($this->getUploadRootDir(),$this->getId() . '.' . $this->getFlag());
+        dump("flag set to : " . $this->getFlag()) ; 
         
     }
     
@@ -120,8 +166,8 @@ class Country
      *
      */   
     public function preRemoveUpload(){
-         dump("PreRemove");
-        $this->tempFilename = $this->getUploadRootDir().'/'.$this->flag;
+        dump("PreRemove");
+        $this->tempFilename = $this->getUploadRootDir().'/'.$this->getId() . '.' . $this->getFlag() ;
         dump("preremove upload " . $this->tempFilename);
        
     }
@@ -213,13 +259,7 @@ class Country
     {
         return $this->flag;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->parties = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+
 
     /**
      * Add parties

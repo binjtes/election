@@ -3,13 +3,13 @@
 namespace BepsElectionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * Party
  *
  * @ORM\Table(name="party")
  * @ORM\Entity(repositoryClass="BepsElectionBundle\Entity\PartyRepository")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\HasLifecycleCallbacks
  */
 class Party
 {
@@ -53,14 +53,14 @@ class Party
     /**
      * @var string
      *
-     * @ORM\Column(name="logo", type="string", length=255)
+     * @ORM\Column(name="logo", type="string", nullable = true , length=255)
      */
     private $logo;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="webcolor", type="string", length=6)
+     * @ORM\Column(name="webcolor", type="string", nullable = true , length=6)
      */
     private $webcolor;
     
@@ -68,14 +68,14 @@ class Party
     /**
      * @var string
      *
-     * @ORM\Column(name="leader", type="string", length=255)
+     * @ORM\Column(name="leader", type="string",nullable = true ,  length=255)
      */
     private $leader;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="leaderImage", type="string", length=255)
+     * @ORM\Column(name="leaderImage", type="string", nullable = true , length=255)
      */
     private $leaderImage;
 
@@ -86,33 +86,142 @@ class Party
     private $country ;
     
     
+    /*
+     * properties  for uploading files
+     * 
+     */
+    private $logofile ;
+    // to remove the previous uploaded logo reference.
+    private $logotemp ;
+    
+    
     public function __construct()
     {
         $this->updatedAt = new \Datetime();
     
     }
 
-    
-    
-    
     /**
-     * @ORM\PrePersist
+     * Get Logofile
+     *
+     * @return UploadedFile
      */
-    public function setCreatedAtValue()
-    {
-        $this->createdAt = new \DateTime();
+    public function getLogofile(){
+        
+        return $this->logofile ;
     }
     
     
     /**
-     * @ORM\preUpdate
-     */
-     public function setUpdatedAtValue()
-     {
+     * Set Logofile
+     *
+    * @param UploadedFile $logofile 
+     */    
+    public function setLogofile(UploadedFile $logofile = null){
+        
+        $this->logofile = $logofile ;
+        
+        // will trigger LifeCycleCallbacks
+        if($logofile){
+            $this->updatedAt = new \DateTime ;
+        }
+        
+        if(null !== $this->logo){
+            $this->logotemp = $this->logo;
+            $this->logo = null;
+        }
+        
+    }
+    
+
+     /**
+      *
+      * @ORM\PrePersist()
+      * @ORM\PreUpdate()
+      *
+      */    
+     public function preUpload(){
+         dump("PreUpdate Prepersist");
          $this->updatedAt = new \DateTime();
+         $this->createdAt = new \DateTime();
+         if(null == $this->logofile ){
+             return ;
+         }
+         // the file name is the id of the entity .
+        // TODO : improve the sanitization of the filename 
+         $this->logo = $this->logofile->getClientOriginalName();
+        
+     
+     }     
+     public function getUploadDir(){
+         // relative to  /web repository
+         return "uploads/img/parties" ;
      }
-    
-    
+     
+     public function getUploadRootDir(){
+     
+         //relative path to the image in the php code..
+         return __DIR__.'/../../../web/'.$this->getUploadDir();
+     }
+     
+     public function getWebPath()
+     {
+         return $this->getUploadDir().'/'.$this->getId().'.'.$this->getLogo();
+     }
+     
+     /**
+      *
+      * @ORM\PostPersist()
+      * @ORM\PostUpdate()
+      *
+      */
+     public function upload(){
+         // if there is no uploaded file , do nothing .
+         dump("PostUpdate");
+         if(null == $this->logofile ){
+             return ;
+         }
+     
+         // remove the previous image
+         if(null !== $this->logotemp){
+             $oldfile = $this->getUploadRootDir().'/'.$this->logotemp ;
+             if(file_exists($oldfile)){
+                 unlink($oldfile);
+                 dump('PostUpdate removed old file ' .$oldfile ) ;
+             }
+     
+         }
+     
+         dump("PostUpdate name ") ;
+         $this->logofile->move($this->getUploadRootDir(),$this->getId() . '.' . $this->getLogo());
+         dump("logo set to : " . $this->getLogo()) ;
+     
+     }     
+     
+     /**
+      *
+      * @ORM\PreRemove()
+      *
+      */
+     public function preRemoveUpload(){
+         dump("PreRemove");
+         $this->logotemp = $this->getUploadRootDir().'/'.$this->getId() . '.' . $this->getLogo() ;
+         dump("preremove upload " . $this->logotemp);
+          
+     }
+     
+     /*
+      *
+      * @ORM\PostRemove()
+      *
+      */
+     public function removeUpload(){
+         dump("PostRemove");
+         if(file_exists($this->logotemp)){
+             unlink($this->logotemp);
+             dump('PostRemove removed temporary file '.$this->logotemp ) ;
+         }
+     }    
     /**
      * Get id
      *

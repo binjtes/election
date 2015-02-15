@@ -1,7 +1,7 @@
 {# src/BepsElectionBundle/Resources/views/Theme/collection_widget.parties.html.twig #}
 {% block collection_widget %}
 {% spaceless %}
-    <div class="collection">CAS 1
+    <div class="collection"><h4>Parties attached </h4>
         {% if prototype is defined %}
             {% set attr = attr|merge({'data-prototype': block('collection_item_widget') }) %}
         {% endif %}
@@ -12,8 +12,9 @@
                 <div class="existing_party">
                 {% set fieldNum = 1 %}
                 {% for row in rows %}
-                    <div class"field{{ fieldNum }}">
+                    <div class="field{{ fieldNum }}">
                     {{ form_label(row) }}
+                  
                     {{ form_widget(row, { 'attr': { 'class': 'test' }}) }}
                     </div>
                     {% set fieldNum = fieldNum + 1 %}

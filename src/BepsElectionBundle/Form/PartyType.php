@@ -5,6 +5,7 @@ namespace BepsElectionBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use BepsElectionBundle\Form\Extension\ImageTypeExtension;
 
 class PartyType extends AbstractType
 {
@@ -17,7 +18,8 @@ class PartyType extends AbstractType
         $builder
             ->add('name')
             ->add('shortName')
-            ->add('logo', 'text' , array('required' => false))
+            ->add('logofile', 'file',array('required' => false ,'label'=>'change party logo'))
+            ->add('logo', 'hidden',array('required' => false,'label'=>false))
             ->add('webcolor','text', array('required' => false))
             ->add('leader','text', array('required' => false))
             ->add('leaderImage','text', array('required' => false))
