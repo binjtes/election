@@ -27,8 +27,12 @@ framework:
 
 # Twig Configuration
 twig:
+    form:
+        resources:
+            - 'BepsElectionBundle:Form:fields.html.twig'
     debug:            "%kernel.debug%"
-    strict_variables: "%kernel.debug%"
+    strict_variables: false
+#    strict_variables: "%kernel.debug%"
 # Assetic Configuration
 assetic:
     filters:

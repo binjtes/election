@@ -2,20 +2,9 @@
 {% extends 'form_div_layout.html.twig' %}
 {% block file_widget %}
     {% spaceless %}
-    <hr>ICI<hr>
     {{ block('form_widget') }}
     {% if image_url is not null %}
         <img src="{{ asset(image_url) }}"/>
     {% endif %}
-
-    {% endspaceless %}
-{% endblock %}
- 
-{% block text_widget %}
-    {% spaceless %}
-    <hr>Yo<hr>
-    {{ block('form_widget') }}
-
-
     {% endspaceless %}
 {% endblock %}

@@ -39,10 +39,10 @@ class ImageTypeExtension extends AbstractTypeExtension
     {
         if (array_key_exists('image_path', $options)) {
             $parentData = $form->getParent()->getData();
-    
             if (null !== $parentData) {
                 $accessor = PropertyAccess::createPropertyAccessor();
                 $imageUrl = $accessor->getValue($parentData, $options['image_path']);
+                dump($imageUrl);
             } else {
                 $imageUrl = null;
             }
