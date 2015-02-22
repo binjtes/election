@@ -94,6 +94,9 @@ class Party
     // to remove the previous uploaded logo reference.
     private $logotemp ;
     
+    private $leaderfile ;
+    private $leadertemp ;
+    
     
     public function __construct()
     {
@@ -132,7 +135,37 @@ class Party
         }
         
     }
+    /**
+     * Get leaderfile
+     *
+     * @return UploadedFile
+     */
+    public function getLeaderfile(){
     
+        return $this->leaderfile ;
+    }
+    
+    
+    /**
+     * Set Logofile
+     *
+     * @param UploadedFile $logofile
+     */
+    public function setLeaderfile(UploadedFile $leaderfile = null){
+    
+        $this->leaderfile = $leaderfile ;
+    
+        // will trigger LifeCycleCallbacks
+        if($leaderfile){
+            $this->updatedAt = new \DateTime ;
+        }
+    
+        if(null !== $this->leaderImage){
+            $this->leadertemp = $this->leaderImage;
+            $this->leaderImage = null;
+        }
+    
+    }    
 
      /**
       *
@@ -144,12 +177,17 @@ class Party
          dump("PreUpdate Prepersist");
          $this->updatedAt = new \DateTime();
          $this->createdAt = new \DateTime();
-         if(null == $this->logofile ){
+         if(null === $this->logofile && null === $this->leaderfile){
              return ;
          }
          // the file name is the id of the entity .
         // TODO : improve the sanitization of the filename 
-         $this->logo = $this->logofile->getClientOriginalName();
+        if($this->logofile){
+            $this->logo = $this->logofile->getClientOriginalName();
+        }
+        if($this->leaderfile){
+            $this->leaderImage = $this->leaderfile->getClientOriginalName();
+        }
         
      
      }     
@@ -164,10 +202,23 @@ class Party
          return __DIR__.'/../../../web/'.$this->getUploadDir();
      }
      
-     public function getWebPath()
+     public function getWebPathLogo()
      {
+         if(!$this->getLogo()){
+             return ;
+         }
          return $this->getUploadDir().'/'.$this->getId().'.'.$this->getLogo();
      }
+     
+     
+     public function getWebPathLeaderImg()
+     {
+         if(!$this->getLeaderImage()){
+             return ;
+         }
+         return $this->getUploadDir().'/'.$this->getId().'.'.$this->getLeaderImage();
+     }
+     
      
      /**
       *
@@ -178,24 +229,37 @@ class Party
      public function upload(){
          // if there is no uploaded file , do nothing .
          dump("PostUpdate");
-         if(null == $this->logofile ){
+         if(null === $this->logofile  && null === $this->leaderfile){
              return ;
          }
      
          // remove the previous image
-         if(null !== $this->logotemp){
+         if($this->logotemp){
              $oldfile = $this->getUploadRootDir().'/'.$this->logotemp ;
              if(file_exists($oldfile)){
                  unlink($oldfile);
                  dump('PostUpdate removed old file ' .$oldfile ) ;
              }
-     
          }
-     
-         dump("PostUpdate name ") ;
-         $this->logofile->move($this->getUploadRootDir(),$this->getId() . '.' . $this->getLogo());
-         dump("logo set to : " . $this->getLogo()) ;
-     
+         if($this->leadertemp){
+             $oldfile = $this->getUploadRootDir().'/'.$this->leadertemp ;
+             if(file_exists($oldfile)){
+                 unlink($oldfile);
+                 dump('PostUpdate removed old file ' .$oldfile ) ;
+             }             
+         }
+         if($this->logofile){
+             dump("PostUpdate name ") ;
+             $this->logofile->move($this->getUploadRootDir(),$this->getId() . '.' . $this->getLogo());
+             dump("logo set to : " . $this->getLogo()) ;
+         }
+         
+         if($this->leaderfile){
+             dump("PostUpdate name ") ;
+             $this->leaderfile->move($this->getUploadRootDir(),$this->getId() . '.' . $this->getLeaderImage());
+             dump("leader image set to : " . $this->getLeaderImage()) ;
+         }
+         
      }     
      
      /**
@@ -206,7 +270,9 @@ class Party
      public function preRemoveUpload(){
          dump("PreRemove");
          $this->logotemp = $this->getUploadRootDir().'/'.$this->getId() . '.' . $this->getLogo() ;
+         $this->leadertemp = $this->getUploadRootDir().'/'.$this->getId() . '.' . $this->getLeaderImage() ;
          dump("preremove upload " . $this->logotemp);
+         dump("preremove upload " . $this->leadertemp);
           
      }
      
@@ -220,6 +286,10 @@ class Party
          if(file_exists($this->logotemp)){
              unlink($this->logotemp);
              dump('PostRemove removed temporary file '.$this->logotemp ) ;
+         }
+         if(file_exists($this->leadertemp)){
+             unlink($this->leadertemp);
+             dump('PostRemove removed temporary file '.$this->leadertemp ) ;
          }
      }    
     /**

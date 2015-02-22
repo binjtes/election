@@ -27,8 +27,9 @@ class CountryType extends AbstractType
     	       ->add('flag', 'text') ;
     	        break;
     	    default : 
-    	        $builder->add('name', 'text')
-    	        ->add('file', 'file', array('image_path'=>'webPath' ,'required' => false ,'label'=>'change flag image'))
+    	        $builder->add('name', 'text') 
+    	        ->add('file', 'file', array('image_path'=>'webPath' ,'required' => false ,'label'=>'change flag image' ,
+    	        'attr'=>array('label_col'=>true ,'simple_col'=>true )))
     	        ->add('flag', 'hidden')
     	        ->add('parties', 'collection', array(
     	            'type'         => new PartyType(),

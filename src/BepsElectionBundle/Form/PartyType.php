@@ -18,10 +18,12 @@ class PartyType extends AbstractType
         $builder
             ->add('name')
             ->add('shortName')
-            ->add('logofile', 'file',array('required' => false ,'label'=>'change party logo'))
-            ->add('logo', 'hidden',array('required' => false,'label'=>false))
+            ->add('logofile', 'file', array('image_path'=>'webPathLogo' ,'required' => false ,'label'=>'change party logo' ,
+                'attr'=>array('label_col'=>true ,'simple_col'=>true )))
             ->add('webcolor','text', array('required' => false))
             ->add('leader','text', array('required' => false))
+            ->add('leaderfile', 'file', array('image_path'=>'webPathLeaderImg' ,'required' => false ,'label'=>'change party logo' ,
+                'attr'=>array('label_col'=>true ,'simple_col'=>true )))
             ->add('leaderImage','text', array('required' => false))
           
         ;

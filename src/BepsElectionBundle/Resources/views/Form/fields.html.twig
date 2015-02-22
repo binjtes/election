@@ -1,10 +1,62 @@
 {# src/BepsElectionBundle/Resources/views/Form/fields.html.twig #}
-{% extends 'form_div_layout.html.twig' %}
+{% extends 'BraincraftedBootstrapBundle:Form:bootstrap.html.twig' %}
 {% block file_widget %}
+    {% if image_url is not null %}
+        {% spaceless %}
+        {% set style = style|default(bootstrap_get_style()) %}
+      
+        {% set col_size = col_size|default(bootstrap_get_col_size()) %}
+
+        {% if simple_col is not defined and bootstrap_get_simple_col() %}
+            {% set simple_col = bootstrap_get_simple_col() %}
+        {% endif %}
+        {% if attr.simple_col is defined and attr.simple_col is not empty %}
+            {% set simple_col = attr.simple_col %}
+        {% endif  %}
+        {% if attr.col_size is defined and attr.col_size is not empty %}
+            {% set col_size = attr.col_size %}
+        {% endif %}
+        {% if attr.style is defined and attr.style is not empty %}
+            {% set style = attr.style %}
+        {% endif %}
+
+        {% if simple_col is defined and simple_col %}
+            <div class="col-{{ col_size }}-{{ simple_col }} clearfix">
+        {% endif %}
+
+        {% set type = type|default('text') %}
+
+        {% if style == 'inline' and (attr.placeholder is not defined or attr.placeholder is empty)  and label != false %}
+            
+            {% if label is empty %}
+                {% set attr = attr|merge({ 'placeholder': name|humanize }) %}
+            {% else %}
+                {% set attr = attr|merge({ 'placeholder': label}) %}
+            {% endif %}
+        {% endif %}
+        
+        {% if static_control is defined and static_control == true %}
+            {% set attr = attr|merge({ 'class': (attr.class|default('') ~ ' form-control-static')|trim }) %}
+            <p id="{{ id }}" {%- for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ value }}</p>
+        {%- else -%}
+            {% set attr = attr|merge({ 'class': (attr.class|default('') ~ ' form-control')|trim }) %}
+            {% dump(attr) %}
+           <img src="{{ asset(image_url) }}" class="img-thumbnail pull-left"/>
+           <div class="pull-left">
+            <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}>
+           </div>
+            {%- endif %}
+        {% if simple_col is defined %}
+            </div>
+        {% endif %}
+        
+       
+        {% endspaceless %} 
+    {% else %}
     {% spaceless %}
     {{ block('form_widget') }}
-    {% if image_url is not null %}
-        <img src="{{ asset(image_url) }}"/>
+    {% endspaceless %} 
     {% endif %}
-    {% endspaceless %}
+
+
 {% endblock %}
