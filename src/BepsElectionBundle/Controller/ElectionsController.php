@@ -6,64 +6,64 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response ;
 use Symfony\Component\HttpFoundation\Request;
-use BepsElectionBundle\Entity\Country ;
+use BepsElectionBundle\Entity\Election ;
 use Braincrafted\Bundle\BootstrapBundle\Session\FlashMessage ;
-use BepsElectionBundle\Form\CountryType ;
+use BepsElectionBundle\Form\ElectionType ;
 
 
-class ManageController extends Controller
+class ElectionsController extends Controller
 {
 	
 
 	
     /**
-     * @Route("/manage", name="manage")
+     * @Route("/elections", name="elections")
      */
     public function indexAction()
     {
     	
-    	// By default displays a list of countries and propose insert/update /delete for those .
+    	// By default displays a list of elections  and propose insert/update /delete for those .
         
         //add an empty form for adding a missing country
-        $country = new Country();
+        $election= new Election();
         
-        $form = $this->createForm(new CountryType(),$country, array('action'=>'manage'));
+        $form = $this->createForm(new ElectionType(),$election, array('action'=>'manage'));
          
         $form->handleRequest($this->getRequest());
         // once updated , redirection to index manage page (listing)
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $country = $form->getData();
-            $em->persist($country);
+            $election = $form->getData();
+            $em->persist($election);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice',   array(
                 'alert' => 'success',
                 'title' => 'Success!',
-                'message' => 'the country has been created'));
+                'message' => 'the election has been created'));
              
         }
          
-        $countries = $this->getDoctrine()->getRepository('BepsElectionBundle:Country')->findAll();
-        return $this->render('BepsElectionBundle:Manage:index.html.twig', array('countries'=>$countries, 'form'=>$form->createView()));
+        $elections = $this->getDoctrine()->getRepository('BepsElectionBundle:Election')->findAll();
+        return $this->render('BepsElectionBundle:Elections:index.html.twig', array('elections'=>$elections, 'form'=>$form->createView()));
     
     }
     
     
 
     /**
-     * @Route("/manage/edit/{countryid}", name="manage_edit")
+     * @Route("/manage/election_edit/{electionid}", name="election_edit")
      */
-    public function editAction($countryid){
+    public function editAction($electionid){
         dump($this->getRequest());
         
         //edit a country : name, some metadata  + TODO parties 
-        $country = $this->getDoctrine()->getRepository('BepsElectionBundle:Country')->find($countryid);
-        $form = $this->createForm(new CountryType($countryid),  $country); 
+        $election = $this->getDoctrine()->getRepository('BepsElectionBundle:Election')->find($countryid);
+        $form = $this->createForm(new ElectionType($electionid),  $election); 
         $form->handleRequest($this->getRequest()); 
         if ($form->isValid()) {
         
             $em = $this->getDoctrine()->getManager();
-            $country = $form->getData(); 
+            $election = $form->getData(); 
             
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice',    array(
@@ -73,25 +73,25 @@ class ManageController extends Controller
             ));
         }    
             
-    	return $this->render('BepsElectionBundle:Manage:edit.html.twig',array('form' => $form->createView(), 'country' => $country));
+    	return $this->render('BepsElectionBundle:Manage:edit.html.twig',array('form' => $form->createView(), 'election' => $election));
     }
   
     /**
-     * @Route("/manage/delete/{countryid}", name="manage_delete")
+     * @Route("/manage/election_delete/{electionid}", name="election_delete")
      */
-    public function deleteAction($countryid){
+    public function deleteAction($electionid){
         // delete  a country
-        $country = $this->getDoctrine()->getRepository('BepsElectionBundle:Country')->find($countryid); 
+        $election = $this->getDoctrine()->getRepository('BepsElectionBundle:Election')->find($electionid); 
         
-        if (!$country ) {
+        if (!$election ) {
             throw $this->createNotFoundException(
-                'No country  found for id ' . $countryid
+                'No election  found for id ' . $countryid
             );
         }
         
         
         
-        $form = $this->createFormBuilder($country)
+        $form = $this->createFormBuilder($election)
             ->add('confirm', 'checkbox', array('required' => true , 'mapped'=>false))
             ->add('delete', 'submit')
             ->getForm();
@@ -102,16 +102,16 @@ class ManageController extends Controller
         if ($form->isValid()) {   
             $em = $this->getDoctrine()->getManager();
             
-            $em->remove($country);
+            $em->remove($election);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice',    array(
                 'alert' => 'success',
-                'title' => 'country removed',
-                'message' => $country->getName() 
+                'title' => 'election removed',
+                'message' => $election->getName() 
             
             ));
             
-            return $this->redirect( $this->generateUrl('manage'));
+            return $this->redirect( $this->generateUrl('elections'));
          
         }             
     	
