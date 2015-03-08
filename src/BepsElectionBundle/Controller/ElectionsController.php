@@ -23,16 +23,20 @@ class ElectionsController extends Controller
     {
     	
     	// By default displays a list of elections  and propose insert/update /delete for those .
-        
-        //add an empty form for adding a missing country
+      
+        //add an empty form for adding an election
+        $em = $this->getDoctrine()->getManager();
         $election= new Election();
         
-        $form = $this->createForm(new ElectionType(),$election, array('action'=>'manage'));
+        $form = $this->createForm(new ElectionType(),$election, array('action'=>'elections','em' => $em));
          
         $form->handleRequest($this->getRequest());
         // once updated , redirection to index manage page (listing)
+        
+        dump($this->getRequest()) ;
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+           
+            
             $election = $form->getData();
             $em->persist($election);
             $em->flush();
@@ -54,10 +58,12 @@ class ElectionsController extends Controller
      * @Route("/manage/election_edit/{electionid}", name="election_edit")
      */
     public function editAction($electionid){
+        
+ 
         dump($this->getRequest());
         
         //edit a country : name, some metadata  + TODO parties 
-        $election = $this->getDoctrine()->getRepository('BepsElectionBundle:Election')->find($countryid);
+        $election = $this->getDoctrine()->getRepository('BepsElectionBundle:Election')->find($electionid);
         $form = $this->createForm(new ElectionType($electionid),  $election); 
         $form->handleRequest($this->getRequest()); 
         if ($form->isValid()) {
@@ -68,8 +74,8 @@ class ElectionsController extends Controller
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice',    array(
                 'alert' => 'success',
-                'title' => 'updated country',
-                'message' => $country->getName()
+                'title' => 'updated election',
+                'message' => $election->getDescription()
             ));
         }    
             

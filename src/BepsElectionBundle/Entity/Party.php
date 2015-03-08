@@ -176,7 +176,9 @@ class Party
      public function preUpload(){
          dump("PreUpdate Prepersist");
          $this->updatedAt = new \DateTime();
-         $this->createdAt = new \DateTime();
+         if($this->createdAt === null ){
+            $this->createdAt = new \DateTime();
+         }
          if(null === $this->logofile && null === $this->leaderfile){
              return ;
          }

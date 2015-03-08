@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="election")
  * @ORM\Entity(repositoryClass="BepsElectionBundle\Entity\ElectionRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Election
 {
@@ -131,8 +132,18 @@ class Election
     {
         $this->child_elections = new \Doctrine\Common\Collections\ArrayCollection();
         $this->updatedAt = new \Datetime();
+        
     }
-
+    
+    /**
+     *
+     * @ORM\PrePersist()
+     *
+     */
+    public function prePersist(){    ;
+        $this->createdAt = new \DateTime(); 
+    
+    }
     /**
      * Get id
      *
@@ -165,6 +176,9 @@ class Election
     {
         return $this->country;
     }
+    
+    
+    
 
     /**
      * Set participationRate

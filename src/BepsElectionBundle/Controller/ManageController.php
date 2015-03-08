@@ -54,9 +54,8 @@ class ManageController extends Controller
      * @Route("/manage/edit/{countryid}", name="manage_edit")
      */
     public function editAction($countryid){
-        dump($this->getRequest());
         
-        //edit a country : name, some metadata  + TODO parties 
+        //edit a country : name, some metadata , parties 
         $country = $this->getDoctrine()->getRepository('BepsElectionBundle:Country')->find($countryid);
         $form = $this->createForm(new CountryType($countryid),  $country); 
         $form->handleRequest($this->getRequest()); 
